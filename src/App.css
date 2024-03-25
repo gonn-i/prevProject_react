@@ -28,6 +28,25 @@
   color: #61dafb;
 }
 
+
+div {
+  box-sizing : border-box
+}
+
+.list {
+  text-align : left;
+  padding-left : 20px;
+  border-bottom : 1px solid grey;
+}
+
+.black-nav {
+  display: flex;
+  background-color: black;
+  width: 100%;
+  color: azure;
+  padding-left: 20px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
