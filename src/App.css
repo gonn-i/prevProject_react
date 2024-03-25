@@ -47,6 +47,10 @@ div {
   padding-left: 20px;
 }
 
+.modal {
+  background-color: rgb(194, 196, 198);
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
