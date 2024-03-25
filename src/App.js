@@ -7,9 +7,11 @@ import { useState } from 'react';
 
 function App() {
   let post = '회기 파스타 맛도리';
-  let [ data, setData ]= useState(['트위드 추천', '봄원피스 추천', '가방 추천'])
-  let [like, setLike] = useState(0)
+  let [ datas, setDatas ]= useState(['트위드 추천', '봄원피스 추천', '가방 추천'])
+  let [like, setLike] = useState([0,0,0])
   let [modal, setModal] = useState(false);
+  let [title, setTitle] = useState(0);
+  let [input, setInput] = useState("");
 
   return (
     // js 파일에서 HTML 대용품으로 사용하는 JSX!!
@@ -19,42 +21,64 @@ function App() {
       <div className='black-nav'>
         <h4 style={{color: 'lightblue', fontWeight: 900}}>ReactBlog</h4>
       </div>
-      <div className="list">
-        <button onClick={() => {
-          let copy = [...data];
-          setData(copy.sort())
+      <button onClick={() => {
+          let copy = [...datas];
+          setDatas(copy.sort())
         }}>가나다순정렬</button>
         <button 
           onClick={()=> {
-            const copy = [... data];
+            const copy = [... datas];
             copy[0] = "남자 트위드 추천";
-            setData(copy)
+            setDatas(copy)
           }}> ➡️ </button>
-        <h4>{data[0]} <span onClick={()=> setLike(like+1)}> 💙 </span> {like} </h4>
-        <p>2월 17일 발행</p>
-      </div>
-      <div className="list">
-        <h4>{data[1]}</h4>
-        <p>2월 17일 발행</p>
-      </div>
-      <div className="list">
-        <h4 onClick={() => setModal(!modal)}>{data[2]}</h4>
-        <p>2월 17일 발행</p>
-      </div>
-      
-      { modal? <Modal></Modal>: null}
 
+      {
+      datas.map((data, i) => {
+        return (
+        <>
+          <div className="list">
+            <h4 onClick={() =>{ 
+              setModal(!modal);
+              setTitle(i);
+              }}>{data} <span onClick={(e)=> {
+              e.stopPropagation()
+              let copy = {...like};
+              copy[i] += 1;
+              setLike(copy)}}> 💙 </span> {like[i]} </h4>
+            <p>2월 17일 발행</p>
+            <button onClick={() => {
+              let copy = [...datas];
+              setDatas(copy.filter((e) => e !== copy[i]));
+          }}>🗑️</button>
+          </div>
+        </> 
+        )
+        })
+      }
 
+      <input onChange={(e) => {
+        setInput(e.target.value)
+      }} />
+      <button onClick={()=> {
+        let copy = [...datas];
+        copy.push(input);
+        setDatas(copy);
+      }}>➕</button>
+
+      { modal? <Modal datas={datas} setDatas={setDatas} title={title} input={input}></Modal>: null}
     </div>
   );
 }
 
-function Modal () {
+function Modal (props) {
   return (
     <div className='modal'>
-      <h4>제목</h4>
+      <h4>{props.datas[props.title]}</h4>
       <p>날짜</p>
-      <p>상세내용</p>
+      <p>{props.input}</p>
+      <button onClick={() =>{
+        props.setDatas([ "여자코트 추천",'봄원피스 추천', '가방 추천' ])
+      }}>글수정</button>
     </div>
   )
 }
@@ -97,3 +121,19 @@ export default App;
 // 2) UI의 현재 상태를 state로 저장
 // 3) state에 따라 UI가 어떻게 보일지 작성
 // + JSX 에서 조건문 쓰는법 -- > "삼항연산자" 써야함 (if문 X)
+
+// map 하고 각 요소에 실행할 함수에 return을 해주면 array에 담아서 넘겨줌 
+
+
+// Props 
+// ⭐️ 부모 -> 자식 state 전송⭐️ 하기 위해서 쓰임! (자식 -> 자식 / 자식 -> 부모 불가 🔥)
+// 자식이 부모의 state를 가져다쓰고 싶을때는 props 
+// 1) <자식 컴포넌트 작명 ={state 이름}>
+// 2) props 파라미터 등록 후 props.작명 사용
+// (참고1) props는 <Modal 이런거={이런거}  저런거={저런거}> 이렇게 10개 100개 1000개 무한히 전송이 가능
+// (참고2) 꼭 state만 전송할 수 있는건 아님 <Modal 글제목={변수명}> ⭐️일반 변수, 함수 전송도 가능⭐️
+// state를 만드는 곳은 state를 사용하는 컴포넌트들 중 "최상위 컴포넌트"!!
+
+// 이벤트 버블링 
+// 이벤트가 발생한 요소부터 => 점점 부모 요소로 이벤트를 전파하는 현상
+// e.stopPropagation() 으로 해결 가능!
