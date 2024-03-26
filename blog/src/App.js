@@ -8,7 +8,7 @@ import { useState } from 'react';
 function App() {
   let post = '회기 파스타 맛도리';
   let [ datas, setDatas ]= useState(['트위드 추천', '봄원피스 추천', '가방 추천'])
-  let [like, setLike] = useState([0,0,0])
+  let [like, setLike] = useState([0,0,0]);
   let [modal, setModal] = useState(false);
   let [title, setTitle] = useState(0);
   let [input, setInput] = useState("");
@@ -42,7 +42,7 @@ function App() {
               setTitle(i);
               }}>{data} <span onClick={(e)=> {
               e.stopPropagation()
-              let copy = {...like};
+              let copy = [...like];
               copy[i] += 1;
               setLike(copy)}}> 💙 </span> {like[i]} </h4>
             <p>2월 17일 발행</p>
@@ -60,9 +60,18 @@ function App() {
         setInput(e.target.value)
       }} />
       <button onClick={()=> {
-        let copy = [...datas];
-        copy.push(input);
-        setDatas(copy);
+        if(input == '' || input == "null"){
+          alert('입력값이 없습니다!')
+        }
+        else {
+          let copy = [...datas];
+          copy.push(input);
+          setDatas(copy);
+
+          let likeCopy = [...like];
+          likeCopy.push(0)
+          setLike(likeCopy);
+        }
       }}>➕</button>
 
       { modal? <Modal datas={datas} setDatas={setDatas} title={title} input={input}></Modal>: null}
@@ -137,3 +146,28 @@ export default App;
 // 이벤트 버블링 
 // 이벤트가 발생한 요소부터 => 점점 부모 요소로 이벤트를 전파하는 현상
 // e.stopPropagation() 으로 해결 가능!
+
+// input에 입력한 값 가져오는 방법
+// 1. e (event) 파라미터를 추가해주고, e.target.value 로 가져오기 
+
+// class형 컴포넌트 
+// class Modal2 extends React.Component {
+//   constructor (props){
+//     super(props);
+//     this.state = {
+//       name: 'kim',
+//       age: 20
+//     }
+//   }
+//   render () {
+//     return (
+//       <div>
+//         안녕 {this.state.name}
+//         <button onClick={()=> {
+//           this.setState({name: 'Lee'})
+//         }}>버튼</button>
+//       </div>
+//     )
+//   }
+
+// }
