@@ -2,6 +2,7 @@ import react, {useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import  data  from '../data'
+import axios from 'axios'
 
 function Detail (props) {
     let [showState, setShowState] = useState(true);
@@ -35,6 +36,15 @@ function Detail (props) {
                     <button className="btn btn-danger">주문하기</button> 
                     </div>
                 </div>
+                <button onClick={() => {
+                    axios.get('https://codingapple1.github.io/shop/data2.json')
+                    .then((data)=>{
+                        console.log(data.data);
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                    })
+                }}>버튼</button>
             </div> 
         </>
     )
