@@ -1,12 +1,15 @@
 import react, {useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom'
+import {Nav} from 'react-bootstrap'
 import styled from 'styled-components'
 import  data  from '../data'
 import axios from 'axios'
-
 function Detail (props) {
+
     let [showState, setShowState] = useState(true);
     let [input, setInput] = useState('');
+    let [tab, setTab] = useState(0);
+    let [fadeMain, setFadeMain] = useState('');
 
     useEffect(() => {
         setTimeout(()=>{
@@ -18,10 +21,19 @@ function Detail (props) {
         if(isNaN(input)) alert('그러지마세요')
     }, [input])
 
+    useEffect(() => {
+        setTimeout(()=> {
+            setFadeMain('end')
+        }, 100)
+        return () => {
+            setFadeMain('')
+        }
+    }, [])
+
     let {id} = useParams();
 
     return (
-        <>
+        <div className={"start " + fadeMain}>
             <div className="container">
                 <input value={input} onChange={(e) => {setInput(e.target.value)}}></input>
                 {showState && <div className="alert alert-warning">2초 이내 구매시 할인</div>}
@@ -36,19 +48,45 @@ function Detail (props) {
                     <button className="btn btn-danger">주문하기</button> 
                     </div>
                 </div>
-                <button onClick={() => {
-                    axios.get('https://codingapple1.github.io/shop/data2.json')
-                    .then((data)=>{
-                        console.log(data.data);
-                    })
-                    .catch((err) => {
-                        console.log(err)
-                    })
-                }}>버튼</button>
+                <Nav variant="tabs"  defaultActiveKey="link0">
+                    <Nav.Item>
+                    <Nav.Link eventKey="link0" onClick={()=> { setTab(0)}}>버튼0</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                    <Nav.Link eventKey="link1" onClick={()=> { setTab(1)}}>버튼1</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                    <Nav.Link eventKey="link2" onClick={()=> { setTab(2)}}>버튼2</Nav.Link>
+                    </Nav.Item>
+                </Nav>
+                <TabContent tab={tab} />
+
             </div> 
-        </>
+        </div>
     )
 }
+
+function TabContent ({tab}) {
+    let [fade, setFade] = useState('');
+
+    useEffect(()=> {
+        let a = setTimeout(() => {
+            setFade('end')
+        }, 100)
+        return () => {
+            clearTimeout(a)
+            setFade('')
+        }
+    }, [tab])
+
+    // if(tab ==0) return <div>내용0</div>
+    // else if(tab ==1) return <div>내용1</div>
+    // else if(tab ==2) return <div>내용2</div>
+    return (<div className={"start " + fade}>
+        {[ <div>내용0</div>, <div>내용1</div>, <div>내용2</div>][tab]}
+    </div>)
+}
+
 
 export default Detail;
 
@@ -106,3 +144,14 @@ export default Detail;
 //     }
 // }, []);
 // + cleanup function은 mount시 실행안됨/ 하지만 unmount시 실행됨!! 
+
+
+// 삼항연산자말고 if 문 작성하는 방법
+// => 컴포넌트화해서 넣기 (line: 59 - 64)
+
+
+// props 쉽게 쓰고 싶으면, 파라미터에 { 프롭요소1, 프롭요소2, ... } 이렇게 쓰기
+
+
+// automatic batching 
+// state변경함수가 도처에 여러개 있는 경우, 각각 재랜더링을 하는게 아니라 마지막에 딱 한번만 재랜더링 됨.

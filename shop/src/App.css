@@ -2,6 +2,15 @@
   text-align: center;
 }
 
+.start {
+  opacity: 0;
+}
+
+.end {
+  opacity: 1;
+  transition: opacity 2s;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

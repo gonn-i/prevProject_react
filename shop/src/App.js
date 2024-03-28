@@ -66,6 +66,7 @@ function App() {
               </div>
             </div>
             <button onClick={()=> {
+
               setClickCount(clickCount+1);
               console.log(clickCount)
               if(clickCount == 1) {
@@ -181,3 +182,4 @@ export default App;
 // axios 라이브러리는 )  JSON -> object/array 으로 자동 변환 
 // fetch는 ) 별도로 JSON으로 변환하는 작업이 필요
 // fetch('URL').then(결과 => ⭐️ 결과.json()).then((결과) => { console.log(결과) } )
+
