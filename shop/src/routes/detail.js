@@ -1,10 +1,15 @@
-import react, {useState, useEffect} from 'react';
+import react, {useState, useEffect, useContext} from 'react';
 import { useParams } from 'react-router-dom'
 import {Nav} from 'react-bootstrap'
 import styled from 'styled-components'
-import  data  from '../data'
+import  data  from '../data.js'
 import axios from 'axios'
+import { Context1 } from '../App.js'
+
+
 function Detail (props) {
+
+    let { stock }= useContext(Context1)
 
     let [showState, setShowState] = useState(true);
     let [input, setInput] = useState('');
@@ -34,6 +39,7 @@ function Detail (props) {
 
     return (
         <div className={"start " + fadeMain}>
+            {stock[0]}
             <div className="container">
                 <input value={input} onChange={(e) => {setInput(e.target.value)}}></input>
                 {showState && <div className="alert alert-warning">2초 이내 구매시 할인</div>}
@@ -59,15 +65,16 @@ function Detail (props) {
                     <Nav.Link eventKey="link2" onClick={()=> { setTab(2)}}>버튼2</Nav.Link>
                     </Nav.Item>
                 </Nav>
-                <TabContent tab={tab} />
+                <TabContent tab={tab} products={props.products} />
 
             </div> 
         </div>
     )
 }
 
-function TabContent ({tab}) {
+function TabContent ({tab, products}) {
     let [fade, setFade] = useState('');
+    let { stock }= useContext(Context1)
 
     useEffect(()=> {
         let a = setTimeout(() => {
@@ -83,7 +90,7 @@ function TabContent ({tab}) {
     // else if(tab ==1) return <div>내용1</div>
     // else if(tab ==2) return <div>내용2</div>
     return (<div className={"start " + fade}>
-        {[ <div>내용0</div>, <div>내용1</div>, <div>내용2</div>][tab]}
+        {[ <div>{products[0].title}</div>, <div>{stock[0]}</div>, <div>내용2</div>][tab]}
     </div>)
 }
 
@@ -155,3 +162,18 @@ export default Detail;
 
 // automatic batching 
 // state변경함수가 도처에 여러개 있는 경우, 각각 재랜더링을 하는게 아니라 마지막에 딱 한번만 재랜더링 됨.
+
+
+// 부모컨포넌트 => 자식컨포넌트로 props 전달 가능! 
+// <App> -> <Detail> -> <TabContent>  (props를 전달할때의 불편함)
+// 중첩의 깊이가 깊다면! too 복잡 
+// sol) 1) Context API 
+// props 전송없이 state 공유가능  -> 하지만 성능상 문제 때문에 많이 쓰진 않음
+//  사용법) 
+// 1) createContext()로 state 보관함 만들어주기 
+// 2) <보관함.Provider value={}>로 원하는 컴포넌트 감싸기 
+// 3) value={{ 전달하길 원하는 state, ...}}
+// 4) 사용하는 컴포넌트에 useContext(보관함이름) -> 사용할 수 있게 해체해주는 역할
+// (단점) 1. state 변경시, 쓸데없는 컴포넌트까지 전부 재랜더링 됨 / 2. useContext를 쓰는 컴포넌트를 다시 재사용할때 Context import 하기 귀찮
+
+// sol) 2) Redux 라이브러리 사용

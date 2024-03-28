@@ -5,15 +5,21 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import './App.css';
 import data from './data'
-import Detail from './routes/detail'
+import Detail from './routes/Detail'
+import Cart from './routes/Carts'
 import axios from 'axios'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext } from 'react';
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom'
 
+
+export let Context1 = createContext() // context 만들어준다! (state 보관함을 만들어준다)
+
 function App() {
+  let [cartProduct, setCartProduct] = useState();
   let [products, setProducts] = useState(data);
   let [clickCount, setClickCount] = useState(1);
+  let [stock, setStock] = useState([10,11,12]);
   let navigate = useNavigate();
 
   // useEffect(()=> {
@@ -85,14 +91,21 @@ function App() {
           </>
         }/>
         <Route path="/detail/:id" element={
-          <><Detail products={products}/></>
+          <Context1.Provider value={{ stock}}>
+            <Detail products={products}/>
+          </Context1.Provider>
         }/>
 
         <Route path="/event" element={<> <Event/> </>}>
           <Route path="one" element={<> 첫 주문시 양배추즙 서비스</>}></Route>
           <Route path="two" element={<> 생일기념 쿠폰받기</>}></Route>
         </Route>
+
+
+        <Route path="/carts" element={<Cart />} />
       </Routes>
+
+
     </div>
   );
 
