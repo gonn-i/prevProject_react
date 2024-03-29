@@ -5,11 +5,13 @@ import styled from 'styled-components'
 import  data  from '../data.js'
 import axios from 'axios'
 import { Context1 } from '../App.js'
+import { addItem } from './../store.js'
+import { useDispatch } from 'react-redux';
 
 
 function Detail (props) {
-
     let { stock }= useContext(Context1)
+    let dispatch = useDispatch()
 
     let [showState, setShowState] = useState(true);
     let [input, setInput] = useState('');
@@ -37,6 +39,15 @@ function Detail (props) {
 
     let {id} = useParams();
 
+    useEffect(() => {
+        let stack = localStorage.getItem('watched')
+        stack = JSON.parse(stack)
+        stack.push(id)
+        stack = new Set(stack)
+        stack = Array.from(stack)
+        localStorage.setItem('watched', JSON.stringify(stack))
+    }, [])
+
     return (
         <div className={"start " + fadeMain}>
             {stock[0]}
@@ -51,7 +62,10 @@ function Detail (props) {
                     <h4 className="pt-5">{props.products[id].title}</h4>
                     <p>{props.products[id].contents}</p>
                     <p>{props.products[id].price}</p>
-                    <button className="btn btn-danger">주문하기</button> 
+                    <button className="btn btn-danger" onClick={() => {
+                        // dispatch(addCart({ id: props.products[id].id, name: props.products[id].name, count: props.products[id].count }))
+                        dispatch(addItem( {id : 1, name : 'Red Knit', count : 1} ))
+                    }}>주문하기</button> 
                     </div>
                 </div>
                 <Nav variant="tabs"  defaultActiveKey="link0">

@@ -16,6 +16,13 @@ import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom'
 export let Context1 = createContext() // context 만들어준다! (state 보관함을 만들어준다)
 
 function App() {
+
+  useEffect(() => {
+    if (!localStorage.getItem('watched')) {
+      localStorage.setItem('watched', JSON.stringify([]));
+  }
+  },[]);
+
   let [cartProduct, setCartProduct] = useState();
   let [products, setProducts] = useState(data);
   let [clickCount, setClickCount] = useState(1);

@@ -1,17 +1,26 @@
 import {Table} from 'react-bootstrap'
 import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import {changeName, plueAge} from '../store/userSlice.js'
+import { plusStock } from '../store.js'
 function  Cart() {
     
     // Redux store에 있던 모든 state가 남음
     let states = useSelector((state)=> {
-        return state.cart
+        return state
     })
     console.log(states)
-    let carts = states;
+    let carts = states.cart;
+    console.log(carts)
+
+    let dispatch = useDispatch()
 
     return (
         <>
+        <h6>{states.user.name} {states.user.age}</h6>
+        <button onClick={ () => {
+            dispatch(plueAge(1))
+        }}> 떡국 🍲 </button>
         <Table>
                 <thead>
                     <tr>
@@ -23,7 +32,7 @@ function  Cart() {
                 </thead>
                 <tbody>
                     {carts.map((cart) => 
-                        <CartTable cart={cart}/>
+                        <CartTable cart={cart} key={cart.id}/>
                     )}
                 </tbody>
             </Table> 
@@ -31,13 +40,15 @@ function  Cart() {
         </>
     )
 
-    function CartTable ({cart}) {
+    function CartTable ({cart }) {
         return (
-            <tr>
+            <tr >
                 <td>{cart.id}</td>
                 <td>{cart.name}</td>
                 <td>{cart.count}</td>
-                <td>🤍</td>
+                <td><button onClick={() => {
+                    dispatch(plusStock(cart.id))
+                }}>🤍</button></td>
             </tr>
         )  
     }

@@ -1,20 +1,10 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit'
+import user from './store/userSlice.js'
 
-let user = createSlice({
-    name: 'user',
-    initialState: 'kim',
-    reducers: {
-        changeName(state) {
-            return 'john ' + state
-        }
-    }
-})
-
-export let { changeName } = user.actions
 
 let stock = createSlice({
     name: 'stock',
-    initialState: [10,11,12], 
+    initialState: [10,11,12]
     }
 )
 
@@ -22,8 +12,19 @@ let cart = createSlice({
     name: 'cart',
     initialState: [
         {id : 0, name : 'White and Black', count : 2},
-        {id : 2, name : 'Grey Yordan', count : 1}] 
+        {id : 2, name : 'Grey Yordan', count : 1}],
+    reducers: {
+        plusStock (state, a){
+            let idx = state.findIndex((e) => { return e.id == a.payload })
+            state[idx].count += 1
+        }, addItem(state, action){
+            // console.log(action.payload)
+            state.push(action.payload)
+        }
+    } 
 })
+
+export let {addItem, plusStock} = cart.actions
 
 export default configureStore({
     reducer: { 
@@ -52,3 +53,9 @@ export default configureStore({
 // 직접 컴포넌트에서 state 수정하지 않는 이유?? 
 // -> 100개의 컴포넌트에서 직접 수정하다가 버그 생기면 근원을 찾기 힘듦, 
 // -> 따라서 컴포넌트에서 " 실행해달라고 부탁하는 식으로 " 하면 버그의 뿌리 찾기 쉬움 
+
+
+// array/object 의 경우 ⭐️ 직접 수정해도 state 변경 가능 ⭐️
+// 왜냐하면 Immer.js 가 도와주기 때문
+// 그래서 문자 하나만 필요해도 일부러 {} 안에 담기도 함 
+// 결론!! state가 object/array 이먄 return 없이 직접 수정이 가능 
