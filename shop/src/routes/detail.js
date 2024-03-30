@@ -191,3 +191,23 @@ export default Detail;
 // (단점) 1. state 변경시, 쓸데없는 컴포넌트까지 전부 재랜더링 됨 / 2. useContext를 쓰는 컴포넌트를 다시 재사용할때 Context import 하기 귀찮
 
 // sol) 2) Redux 라이브러리 사용
+
+// 성능개선 📍
+
+// memo() 로 컴포넌트의 불필요한 재랜더링 막기 
+// 부모가 재랜더링 되면 자식도 영향을 받아 재랜더링됨 ... 따라서 자삭의 재랜더링을 막고 싶다면 memo() 사용
+
+// useMemo()  === useEffect() 와 비슷함 
+// 컴포넌트 로드시 1회만 실행하고 싶은 코드가 있다면 거기에 담으면 됨 
+// useEffect는 jsx가 모두 실행되고 동작하는 반면, useMemo는 동시에 돌아감 
+
+// useTranstion () ... 
+// 브라우저는 싱글 스레드이기 때문에 지연시간이 생김 
+// 따라서 느리게 돌아가는 함수를 뒤로 늦춤으로써, 우선적으로 실행할 것은 실행할 수 있게 
+// let [isPending, startTransition] = useTransition()
+// let [처리중, 늦게처리 ] = useTransition()
+// startTranstition(() => { 느리게 돌아가는 변경함수 })
+
+// useDefferedValue() -> 안에 state나 props 넣어줌 
+// 마찬가지로 안에 넣은게 변동사항이 생기면 늦게 처리해줌 
+// useDeferredValue 써도 느린 컴포넌트 성능향상 가능 ! 
