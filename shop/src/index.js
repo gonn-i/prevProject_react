@@ -6,16 +6,21 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux'
 import store from './store.js'
+import { QueryClient, QueryClientProvider} from 'react-query'
+
+const queryClient = new QueryClient()
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <Provider store={store}>
-      <React.StrictMode>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </React.StrictMode>
-  </Provider>
+  <QueryClientProvider client={queryClient}>
+    <Provider store={store}>
+        <React.StrictMode>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </React.StrictMode>
+    </Provider>
+  </QueryClientProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
@@ -39,3 +44,8 @@ reportWebVitals();
 // JSON.stringify(array)
 // JSON으로 넣었기 때문에, data.name 과 같이 사용할 수는 없음 
 // 따라서 다시 obj로 변환해야함 ... JSON.parse(data) ⭐️
+
+// react- query 셋팅 방법 
+// import { QueryClient, QueryClientProvider } from "react-query"  //1번
+// const queryClient = new QueryClient()   //2번
+// <QueryClientProvider client={queryClient}> </QueryClientProvider> //3번

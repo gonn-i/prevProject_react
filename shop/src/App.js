@@ -8,6 +8,7 @@ import data from './data'
 import Detail from './routes/Detail'
 import Cart from './routes/Carts'
 import axios from 'axios'
+import { useQuery } from 'react-query'
 
 import { useState, useEffect, createContext } from 'react';
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom'
@@ -28,6 +29,11 @@ function App() {
   let [clickCount, setClickCount] = useState(1);
   let [stock, setStock] = useState([10,11,12]);
   let navigate = useNavigate();
+
+  let result = useQuery(['작명'], () => {
+    return axios.get('https://codingapple1.github.io/userdata.json')
+          .then((result) => result.data)
+  })
 
   // useEffect(()=> {
   //     products.map((product, i) => {
@@ -58,6 +64,10 @@ function App() {
                   Separated link
                 </NavDropdown.Item>
               </NavDropdown>
+            </Nav>
+            <Nav className="ms-auto">
+              {result.isLoading? '로딩중' : result.data.name}
+              {result.error && '에러남'}
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -202,4 +212,19 @@ export default App;
 // axios 라이브러리는 )  JSON -> object/array 으로 자동 변환 
 // fetch는 ) 별도로 JSON으로 변환하는 작업이 필요
 // fetch('URL').then(결과 => ⭐️ 결과.json()).then((결과) => { console.log(결과) } )
+
+
+// react-query
+// useQuery import 해서 사용 
+// useQuery('작명', () => { 실행 함수 })
+// 장점1) ajax 요청 성공/ 실패/ 로딩중 상태를 쉽게 파악할 수 있다.
+// - ajax요청이 로딩중일 땐 result.isLoading ... true
+// - ajax요청이 실패시엔 result.error ... true
+// - ajax요청이 성공시엔 result.data 안에 데이터
+// ====> 따라서 별도의 state 만들 필요가 없음
+// 장점2) 틈만 나면 알아서 ajax 재요청 해줌 
+// 장점3) 실패시 재시도를 알아서 해줌 (4-5번 재시도)
+// 장점4) ajax로 가져온 결과는 state 공유 필요없음 
+// 하위 컴포넌트에 ajax 코드를 동일하게 적어주면 됨, 캐싱기능이 있기 때문에 이미 같은 ajax 요청이 있으면 우선적으로 이전 것을 가져다 씀 
+
 
